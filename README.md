@@ -10,7 +10,7 @@ $ composer install frdl/shutdown-helper
 ````php
 $ShutdownTasks = \frdlweb\Thread\ShutdownTasks::mutex();
 $ShutdownTasks(function($start){
-	echo date('c', time()).' execution microtime >= '.microtime() - $start;
+	print_r( date('c', time()).' execution microtime >= '.microtime() - $start );
 }, microtime());
 
 ````
