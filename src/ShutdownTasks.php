@@ -12,7 +12,7 @@ class ShutdownTasks {
 
     public function __construct() {
         $this->callbacks = [];
-		    register_shutdown_function([$this, 'callRegisteredShutdown']);
+		register_shutdown_function([$this, 'callRegisteredShutdown']);
     }
 	
 	public function __invoke(){
@@ -57,12 +57,27 @@ class ShutdownTasks {
 		
         return $this;
     }
+	
+    public function prepend() {
+        $callback = func_get_args();
+       
+        if (empty($callback)) {
+			throw new \Exception('No callback passed to '.__METHOD__);
+        }
+        if (!is_callable($callback[0])) {
+			throw new \Exception('Invalid callback passed to '.__METHOD__);
+        }
+        array_unshift($this->callbacks, $callback);
+		
+        return $this;
+    }
+	
     public function callRegisteredShutdown() {
-		 while(0<count($this->callbacks)){
+		while(0<count($this->callbacks)){
 		  	$arguments = array_shift($this->callbacks);
-			  $callback = array_shift($arguments);
-		    call_user_func_array($callback, $arguments);
-		 }
+			$callback = array_shift($arguments);
+		    call_user_func_array($callback, $arguments);				
+		}
     }
 
 }
